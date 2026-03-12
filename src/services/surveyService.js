@@ -1,24 +1,9 @@
 import apiClient from '@/lib/axios';
 
 export const surveyService = {
-  getSurveys: async () => {
-    const response = await apiClient.get('/api/surveys');
-    return response.data;
-  },
-  getSurvey: async (id) => {
-    const response = await apiClient.get(`/api/surveys/${id}`);
-    return response.data;
-  },
-  createSurvey: async (survey) => {
-    const response = await apiClient.post('/api/surveys', survey);
-    return response.data;
-  },
-  updateSurvey: async (id, survey) => {
-    const response = await apiClient.put(`/api/surveys/${id}`, survey);
-    return response.data;
-  },
-  deleteSurvey: async (id) => {
-    const response = await apiClient.delete(`/api/surveys/${id}`);
-    return response.data;
-  },
+  getSurveys: async () => await apiClient.get('/api/surveys'),
+  getSurvey: async (id) => await apiClient.get(`/api/surveys/${id}`),
+  createSurvey: async (survey) => await apiClient.post('/api/surveys', survey),
+  updateSurvey: async (id, survey) => await apiClient.put(`/api/surveys/${id}`, survey),
+  deleteSurvey: async (id) => await apiClient.delete(`/api/surveys/${id}`),
 };

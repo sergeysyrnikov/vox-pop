@@ -15,9 +15,6 @@ export default function RootLayout({ children }) {
             <Link href="/" className="text-2xl font-bold hover:text-blue-500">
               Главная
             </Link>
-            <Link href="/surveys" className="text-2xl hover:text-blue-500">
-              Опросы
-            </Link>
           </nav>
         </header>
         <main className="container mx-auto flex-1 p-4">{children}</main>

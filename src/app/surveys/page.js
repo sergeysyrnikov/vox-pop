@@ -2,6 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { SurveyCard } from '@/components/surveyCard';
+import { useState, useEffect } from 'react';
+import { surveyService } from '@/services/surveyService';
+import { ErrorDialog } from '@/components/errorDialog';
 
 const surveys = [
   {
@@ -36,6 +39,27 @@ const surveys = [
 
 export default function SurveysPage() {
   const router = useRouter();
+  const [surveys, setSurveys] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    surveyService
+      .getSurveys()
+      .then((data) => {
+        setSurveys(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleTakeSurvey = (surveyId) => {
     router.push(`/surveys/${surveyId}`);
@@ -63,6 +87,14 @@ export default function SurveysPage() {
           onDelete={() => handleDeleteSurvey(survey.id)}
         />
       ))}
+
+      <ErrorDialog
+        open={!!error}
+        onOpenChange={(open) => setError(open ? error : null)}
+        statusCode={error?.statusCode}
+        title={error?.title || 'Ошибка'}
+        message={error?.message}
+      />
     </div>
   );
 }

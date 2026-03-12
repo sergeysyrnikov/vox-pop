@@ -1,3 +1,7 @@
+import axios from 'axios';
+
+import { getAccessToken, removeAccessToken } from '@/lib/authStorage';
+
 const apiClient = axios.create({
   baseURL: process.env.BACKEND_API_URL || 'http://127.0.0.1:8050/',
   timeout: 10000,
@@ -7,7 +11,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(async (request) => {
-  const token = localStorage.getItem('token');
+  const token = getAccessToken();
   if (token) {
     request.headers.Authorization = `Bearer ${token}`;
   }
@@ -15,15 +19,21 @@ apiClient.interceptors.request.use(async (request) => {
 });
 
 apiClient.interceptors.response.use(
-  async (response) => {
-    return response.data;
-  },
+  async (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      removeAccessToken();
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
-    return Promise.reject(error.response.data);
+    console.log(error);
+    const normalizedError = {
+      message: error.response?.data?.detail ?? error?.message ?? null,
+      statusCode: error.response?.status ?? null,
+    };
+
+    return Promise.reject(normalizedError);
   }
 );
 
