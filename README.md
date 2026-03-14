@@ -6,13 +6,15 @@
 
 - **Next.js 16 / React 19** (App Router, серверные и клиентские компоненты)
 - **Tailwind CSS 4**
-- **shadcn/ui**, Radix UI
-- **Axios** для работы с API
+- **shadcn/ui**, Radix UI (Base UI)
+- **Zustand** — глобальное состояние (пользователь, ошибки)
+- **Axios** — работа с API
+- **react-hook-form** + **Zod** — формы и валидация
 
 ### Основные возможности
 
 - Регистрация и авторизация пользователя (`/register`, `/login`)
-- Список опросов пользователя и публичных опросов (`/surveys`)
+- Список опросов пользователя и публичных опросов (`/surveys`) с пагинацией
 - Просмотр и прохождение опроса (`/surveys/[id]`)
 - Страница редактирования опроса (`/surveys/[id]/edit`)
 - Создание нового опроса (`/surveys/new`)
@@ -49,22 +51,27 @@ npm run dev
 - `npm run build` — production‑сборка
 - `npm run start` — запуск production‑сборки
 - `npm run lint` — запуск ESLint
-- `npm run format` — автоформатирование кода Prettier
+- `npm run format` — автоформатирование кода (Prettier)
 - `npm run format:check` — проверка форматирования без изменения файлов
 
 ### Архитектура
 
 - `src/app` — маршруты и страницы (Next.js App Router)
   - `page.js` — корневая страница
-  - `surveys/page.js` — список опросов
+  - `surveys/page.js` — список опросов (пагинация)
   - `surveys/[id]/page.js` — просмотр/прохождение опроса
   - `surveys/[id]/edit/page.js` — редактирование опроса
   - `surveys/new/page.js` — создание опроса
   - `login/page.js`, `register/page.js` — страницы аутентификации
-- `src/components` — презентационные и контейнерные компоненты (например, `SurveyCard`)
-- `src/components/ui` — обёртки над shadcn/ui
-- `src/services` — работа с API (например, `authService`, `surveyService`)
-- `src/lib` — вспомогательные модули (`axios`‑клиент, утилиты)
+- `src/components` — компоненты интерфейса
+  - `SurveyCard`, `ContentCard` — карточки контента
+  - `BasePagination` — пагинация
+  - `ErrorDialog`, `LoadingSpinner` — состояние загрузки и ошибки
+  - `formTextField`, `formTextAreaField`, `formSelectField`, `formUserField`, `formDateField`, `formDateTimeField` — поля форм (react-hook-form)
+- `src/components/ui` — обёртки над shadcn/ui (Button, Card, Input, Label, Dialog, Badge, Form, Pagination)
+- `src/stores` — состояние Zustand (например, `userStore` — текущий пользователь)
+- `src/services` — работа с API (`authService`, `surveyService`, `userService`)
+- `src/lib` — вспомогательные модули (axios‑клиент, `authStorage`, `utils`)
 
 ### Переменные окружения
 
@@ -79,7 +86,6 @@ BACKEND_API_URL=http://127.0.0.1:8050/
 
 ### Стиль кода
 
-- JavaScript/React по правилам **Standard.js** (2 пробела, одинарные кавычки, без точек с запятой)
+- JavaScript/React по правилам **Standard.js** (2 пробела, одинарные кавычки)
 - Форматирование через **Prettier**
-- Линтинг через **ESLint + eslint-config-next**
-
+- Линтинг через **ESLint** и **eslint-config-next**
