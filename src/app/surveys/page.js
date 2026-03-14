@@ -6,6 +6,9 @@ import { useState, useEffect } from 'react';
 import { surveyService } from '@/services/surveyService';
 import { ErrorDialog } from '@/components/errorDialog';
 import { BasePagination } from '@/components/basePagination';
+import { LoadingSpinner } from '@/components/loadingSpinner';
+import { useUserStore } from '@/stores/userStore';
+import { formatDateTime } from '@/lib/utils';
 
 export default function SurveysPage() {
   const router = useRouter();
@@ -14,9 +17,10 @@ export default function SurveysPage() {
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const { user, fetchCurrentUser, clearUserError, error: userError } = useUserStore();
 
   useEffect(() => {
-    const fetchSurveys = async () => {
+    (async () => {
       const res = await surveyService.getSurveys(page);
       if (res.ok) {
         console.log(res.data);
@@ -27,14 +31,18 @@ export default function SurveysPage() {
         setError(res.data);
         setIsLoading(false);
       }
-    };
-
-    fetchSurveys();
+    })();
   }, [page]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    if (!user) fetchCurrentUser();
+  }, [fetchCurrentUser]);
+
+  useEffect(() => {
+    if (userError) setError(userError);
+  }, [userError]);
+
+  if (isLoading) return <LoadingSpinner />;
 
   const handleTakeSurvey = (surveyId) => {
     router.push(`/surveys/${surveyId}`);
@@ -62,8 +70,8 @@ export default function SurveysPage() {
               key={survey.id}
               title={survey.title}
               status={survey.status}
-              createdAt={survey.createdAt}
-              isOwner={survey.isOwner}
+              createdAt={formatDateTime(survey.created_at)}
+              isOwner={survey.author === user.id}
               onTakeSurvey={() => handleTakeSurvey(survey.id)}
               onEdit={() => handleEditSurvey(survey.id)}
               onDelete={() => handleDeleteSurvey(survey.id)}
@@ -73,7 +81,10 @@ export default function SurveysPage() {
       </BasePagination>
       <ErrorDialog
         open={error}
-        onOpenChange={(open) => setError(open ? error : null)}
+        onOpenChange={(open) => {
+          setError(open ? error : null);
+          if (!open) clearUserError();
+        }}
         statusCode={error?.statusCode}
         title={error?.title || 'Ошибка'}
         message={error?.message}

@@ -40,7 +40,7 @@ export const surveyService = {
   },
   updateSurvey: async (id, survey) => {
     try {
-      const res = await apiClient.put(`/api/surveys/${id}`, survey);
+      const res = await apiClient.patch(`/api/surveys/${id}/`, survey);
       if (res.status !== 200) {
         return { ok: false, data: res.data, statusCode: res.status };
       }

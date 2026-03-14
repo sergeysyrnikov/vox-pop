@@ -23,4 +23,15 @@ export const authService = {
       return { ok: false, data: error };
     }
   },
+  getCurrentUser: async () => {
+    try {
+      const res = await apiClient.get('/api/users/me/');
+      if (res.status !== 200) {
+        return { ok: false, data: res.data, statusCode: res.status };
+      }
+      return { ok: true, data: res.data, statusCode: res.status };
+    } catch (error) {
+      return { ok: false, data: error };
+    }
+  },
 };
