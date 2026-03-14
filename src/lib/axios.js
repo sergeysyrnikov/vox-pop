@@ -27,7 +27,6 @@ apiClient.interceptors.response.use(
         window.location.href = '/login';
       }
     }
-    console.log(error);
     const normalizedError = {
       message: error.response?.data?.detail ?? error?.message ?? null,
       statusCode: error.response?.status ?? null,

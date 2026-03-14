@@ -3,21 +3,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-export function SurveyCard({
-  title,
-  status,
-  createdAt,
-  isOwner,
-  onTakeSurvey,
-  onEdit,
-  onDelete,
-  fullWidth = false,
-}) {
+export function SurveyCard({ title, status, createdAt, isOwner, onTakeSurvey, onEdit, onDelete }) {
   const statusColor = {
-    active: 'bg-green-500 text-green-800',
     draft: 'bg-yellow-500 text-yellow-800',
-    completed: 'bg-red-500 text-neutral-600',
-    archived: 'bg-gray-500 text-grey-800',
+    published: 'bg-green-500 text-green-800',
   };
 
   return (
